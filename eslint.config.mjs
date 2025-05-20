@@ -20,7 +20,7 @@ export default defineConfig([
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
     languageOptions: { globals: globals.browser },
-    plugins:[{}]
+    plugins: [{}],
   },
   tseslint.configs.recommended,
 ]);
