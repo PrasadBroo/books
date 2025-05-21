@@ -18,6 +18,7 @@ export const books = pgTable(
     id: uuid().defaultRandom().primaryKey(),
     title: text().notNull(),
     author: varchar({ length: 100 }).notNull(),
+    genre: varchar({ length: 100 }).notNull(),
     page_count: integer().notNull(),
     description: varchar({ length: 255 }).notNull(),
     publication_date: date().defaultNow().notNull(),
@@ -40,13 +41,10 @@ export const books = pgTable(
   },
 );
 
-export const booksUserRelations = relations(books, ({ one }) => ({
+export const booksUserRelations = relations(books, ({ one, many }) => ({
   user: one(users, {
     fields: [books.added_by],
     references: [users.id],
   }),
-}));
-
-export const booksReviewsRelations = relations(books, ({ many }) => ({
   reviews: many(reviews),
 }));

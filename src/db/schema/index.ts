@@ -1,3 +1,3 @@
-export { users, usersBooksRelations, userReviewRelations } from './users';
-export { books, booksUserRelations, booksReviewsRelations } from './books';
-export { reviews, reviewsBookRelations, reviewsUserRelations } from './reviews';
+export { users, usersBooksRelations } from './users';
+export { books, booksUserRelations } from './books';
+export { reviews, reviewsBookRelations } from './reviews';

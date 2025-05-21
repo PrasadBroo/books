@@ -9,6 +9,7 @@ import {
   check,
 } from 'drizzle-orm/pg-core';
 import { books } from './books';
+import { reviews } from './reviews';
 
 export const users = pgTable(
   'users',
@@ -32,8 +33,16 @@ export const users = pgTable(
 
 export const usersBooksRelations = relations(users, ({ many }) => ({
   books: many(books),
+  reviews: many(reviews),
 }));
 
-export const userReviewRelations = relations(users, ({ many }) => ({
-  user: many(books),
-}));
+export type TUser = {
+  id: string;
+  first_name: string;
+  last_name: string;
+  age: number;
+  username: string;
+  email: string;
+  created_at: Date;
+  updated_at: Date;
+};

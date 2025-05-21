@@ -45,9 +45,6 @@ export const reviewsBookRelations = relations(reviews, ({ one }) => ({
     fields: [reviews.book_id],
     references: [books.id],
   }),
-}));
-
-export const reviewsUserRelations = relations(reviews, ({ one }) => ({
   user: one(users, {
     fields: [reviews.user_id],
     references: [users.id],
