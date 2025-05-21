@@ -1,8 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import config from '../config/env';
+import { db } from '../db';
+import { users } from '../db/schema';
+import { eq } from 'drizzle-orm';
 
-export const requireAuth = (
+export const requireAuth = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -14,13 +17,29 @@ export const requireAuth = (
     return res.json({ error: 'Authentication token required' }).status(401);
   }
 
-  jwt.verify(token, config.JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(403).json({ error: 'Invalid or expired token' });
-    }
+  try {
+    const user = jwt.verify(token, config.JWT_SECRET);
 
+    // fetch user from db
+
+    const [userinfo] = await db
+      .select({
+        id: users.id,
+        first_name: users.first_name,
+        last_name: users.last_name,
+        age: users.age,
+        username: users.username,
+        email: users.email,
+        created_at: users.created_at,
+        updated_at: users.updated_at,
+      })
+      .from(users)
+      .where(eq(users.id, user?.sub as string));
     // Add the user to the request object
-    (req as any).user = user;
+    req.user = userinfo;
     next();
-  });
+    return;
+  } catch (error) {
+    return res.status(403).json({ error: 'Invalid or expired token' });
+  }
 };
