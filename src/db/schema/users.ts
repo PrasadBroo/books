@@ -1,3 +1,4 @@
+import { relations } from 'drizzle-orm';
 import {
   pgTable,
   integer,
@@ -6,6 +7,7 @@ import {
   timestamp,
   char,
 } from 'drizzle-orm/pg-core';
+import { books } from './books';
 
 export const users = pgTable('users', {
   id: uuid().defaultRandom().primaryKey(),
@@ -22,3 +24,11 @@ export const users = pgTable('users', {
     .defaultNow()
     .notNull(),
 });
+
+export const usersBooksRelations = relations(users, ({ many }) => ({
+  books: many(books),
+}));
+
+export const userReviewRelations = relations(users, ({ many }) => ({
+  user: many(books),
+}));

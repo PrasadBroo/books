@@ -3,9 +3,9 @@ import config from '../config/env';
 
 export default defineConfig({
   out: './drizzle',
-  schema: './src/db/schema',
+  schema: './schema',
   dialect: 'postgresql',
   dbCredentials: {
-    url: config.databaseUrl!,
+    url: config.DATABASE_URL!,
   },
 });

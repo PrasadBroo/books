@@ -9,6 +9,8 @@ import {
   index,
 } from 'drizzle-orm/pg-core';
 import { users } from './users';
+import { relations } from 'drizzle-orm';
+import { reviews } from './reviews';
 
 export const books = pgTable(
   'books',
@@ -21,7 +23,7 @@ export const books = pgTable(
     publication_date: date().defaultNow().notNull(),
     added_by: uuid()
       .notNull()
-      .references(() => users.id),
+      .references(() => users.id, { onDelete: 'cascade' }),
     created_at: timestamp({ precision: 6, withTimezone: true })
       .defaultNow()
       .notNull(),
@@ -37,3 +39,14 @@ export const books = pgTable(
     ];
   },
 );
+
+export const booksUserRelations = relations(books, ({ one }) => ({
+  user: one(users, {
+    fields: [books.added_by],
+    references: [users.id],
+  }),
+}));
+
+export const booksReviewsRelations = relations(books, ({ many }) => ({
+  reviews: many(reviews),
+}));

@@ -1,17 +1,16 @@
 import {
   pgTable,
   integer,
-  varchar,
   uuid,
   timestamp,
   text,
-  date,
   index,
   unique,
 } from 'drizzle-orm/pg-core';
 
 import { users } from './users';
 import { books } from './books';
+import { relations } from 'drizzle-orm';
 
 export const reviews = pgTable(
   'reviews',
@@ -20,7 +19,7 @@ export const reviews = pgTable(
     user_id: uuid()
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
-    book_id: integer()
+    book_id: uuid()
       .notNull()
       .references(() => books.id, { onDelete: 'cascade' }),
     rating: integer('rating').notNull(),
@@ -40,3 +39,17 @@ export const reviews = pgTable(
     ];
   },
 );
+
+export const reviewsBookRelations = relations(reviews, ({ one }) => ({
+  book: one(books, {
+    fields: [reviews.book_id],
+    references: [books.id],
+  }),
+}));
+
+export const reviewsUserRelations = relations(reviews, ({ one }) => ({
+  user: one(users, {
+    fields: [reviews.user_id],
+    references: [users.id],
+  }),
+}));
