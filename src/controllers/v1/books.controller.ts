@@ -47,7 +47,7 @@ export const getBooks = async (req: Request, res: Response) => {
       return;
     }
 
-    const { page, limit } = queryResult.data;
+    const { page, limit, search } = queryResult.data;
 
     // Build the query with conditional filters using the where method
     const booksResult = await db
@@ -55,16 +55,12 @@ export const getBooks = async (req: Request, res: Response) => {
       .from(books)
       .where(
         or(
-          queryResult.data.search
-            ? ilike(books.author, `%${queryResult.data.search}%`)
-            : undefined,
-          queryResult.data.search
-            ? ilike(books.genre, `%${queryResult.data.search}%`)
-            : undefined,
+          search ? ilike(books.author, `%${search}%`) : undefined,
+          search ? ilike(books.genre, `%${search}%`) : undefined,
         ),
       )
       .limit(limit)
-      .offset(page * limit);
+      .offset((page - 1) * limit);
 
     // Get total count for pagination metadata
     const [data] = await db
@@ -72,12 +68,8 @@ export const getBooks = async (req: Request, res: Response) => {
       .from(books)
       .where(
         or(
-          queryResult.data.search
-            ? ilike(books.author, `%${queryResult.data.search}%`)
-            : undefined,
-          queryResult.data.search
-            ? ilike(books.genre, `%${queryResult.data.search}%`)
-            : undefined,
+          search ? ilike(books.author, `%${search}%`) : undefined,
+          search ? ilike(books.genre, `%${search}%`) : undefined,
         ),
       );
 
