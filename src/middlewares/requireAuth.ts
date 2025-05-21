@@ -14,7 +14,8 @@ export const requireAuth = async (
   const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
 
   if (!token) {
-    return res.json({ error: 'Authentication token required' }).status(401);
+    res.json({ error: 'Authentication token required' }).status(401);
+    return;
   }
 
   try {
@@ -40,6 +41,7 @@ export const requireAuth = async (
     next();
     return;
   } catch (error) {
-    return res.status(403).json({ error: 'Invalid or expired token' });
+    res.status(403).json({ error: 'Invalid or expired token' });
+    return;
   }
 };

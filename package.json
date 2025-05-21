@@ -5,8 +5,8 @@
   "main": "sever.js",
   "scripts": {
     "build": "tsc",
-    "start": "node server.js",
-    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts",
+    "start": "node dist/server.js",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node'  src/server.ts",
     "lint": "eslint 'src/**/*.ts'"
   },
   "keywords": [],
@@ -16,6 +16,7 @@
     "bcrypt": "^6.0.0",
     "dotenv": "^16.5.0",
     "drizzle-orm": "^0.43.1",
+    "drizzle-zod": "^0.8.1",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.0",
