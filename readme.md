@@ -54,6 +54,9 @@ npm run db:generate
 npm start
 ```
 
+### 7. ER Diagram/ DB Schema
+![ERD Screenshot](er_diagram.png)
+
 # 📦 Design Considerations
 
 - ✅ **API Versioning**: All endpoints are prefixed with `/api/v1/` to support future upgrades.
