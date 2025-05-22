@@ -124,7 +124,7 @@ export const getBookById = async (req: Request, res: Response) => {
     const reviews_list = await db.query.reviews.findMany({
       where: eq(reviews.book_id, book.id),
       limit: queryResult.data.limit,
-      offset: queryResult.data.limit * queryResult.data.page,
+      offset: queryResult.data.limit * (queryResult.data.page - 1),
     });
     const [avg_rating] = await db
       .select({ average: avg(reviews.rating) })
