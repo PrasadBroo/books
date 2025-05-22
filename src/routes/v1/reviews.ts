@@ -1,9 +1,12 @@
 import express from 'express';
-import { signup, login } from '../../controllers/v1/auth.controller';
+import {
+  deleteReview,
+  updateReview,
+} from '../../controllers/v1/reviews.controller';
 const router = express.Router();
 
-router.put('/:review_id', signup);
+router.put('/:review_id', updateReview);
 
-router.delete('/:review_id', login);
+router.delete('/:review_id', deleteReview);
 
 export default router;
