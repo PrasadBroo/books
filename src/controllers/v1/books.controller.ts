@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
-import { eq, avg, or, ilike, count } from 'drizzle-orm';
+import { eq, avg, or, ilike, count, and, is } from 'drizzle-orm';
 import { db } from '../../db';
 import { books, reviews } from '../../db/schema';
 
@@ -26,6 +26,18 @@ const createBookSchema = z.object({
     .number()
     .int('Page count must be a whole number')
     .positive('Page count must be positive'),
+});
+
+const createReviewSchema = z.object({
+  text: z
+    .string()
+    .min(1, 'Review text is required')
+    .max(255, 'Review text must be less than 255 characters'),
+  rating: z
+    .number()
+    .int('Rating must be a whole number')
+    .min(1, 'Rating must be at least 1')
+    .max(5, 'Rating cannot exceed 5'),
 });
 
 const bookQuerySchema = z.object({
@@ -167,6 +179,65 @@ export const createBook = async (req: Request, res: Response) => {
     res.status(201).json({
       message: 'Book created successfully',
       book: newBook,
+    });
+    return;
+  } catch (error) {
+    console.error('Create book error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+    return;
+  }
+};
+
+export const createReview = async (req: Request, res: Response) => {
+  try {
+    const bookId = req.params.book_id;
+
+    const [book] = await db.select().from(books).where(eq(books.id, bookId));
+
+    if (!book) {
+      res.status(404).json({ error: 'Book not found' });
+      return;
+    }
+
+    const result = createReviewSchema.safeParse(req.body);
+
+    if (!result.success) {
+      res.status(400).json({
+        error: 'Validation failed',
+        details: result.error.format(),
+      });
+      return;
+    }
+
+    const reviewData = result.data;
+
+    // check if review is already addedfor this book
+
+    const [isReviewAlreadyadded] = await db
+      .select()
+      .from(reviews)
+      .where(
+        and(eq(reviews.book_id, bookId), eq(reviews.user_id, req.user?.id!)),
+      );
+
+    if (isReviewAlreadyadded) {
+      res.status(400).json({ error: 'You have already reviewed this book' });
+      return;
+    }
+
+    const [reviewAdded] = await db
+      .insert(reviews)
+      .values({
+        book_id: bookId,
+        rating: reviewData.rating,
+        review_text: reviewData.text,
+        user_id: req.user?.id!,
+      })
+      .returning();
+
+    res.status(201).json({
+      message: 'Review created successfully',
+      review: reviewAdded,
     });
     return;
   } catch (error) {
