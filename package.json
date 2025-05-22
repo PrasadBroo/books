@@ -5,8 +5,10 @@
   "main": "sever.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/server.js",
-    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node'  src/server.ts",
+    "start": "npm run db:migrate && node dist/server.js",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "npm run db:generate && drizzle-kit migrate",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' --files  src/server.ts",
     "lint": "eslint 'src/**/*.ts'"
   },
   "keywords": [],
