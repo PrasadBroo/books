@@ -42,10 +42,10 @@ CREATE DATABASE books;
 
 Update your .env file with the correct database connection string.
 
-### 5. Generate schema
+### 5. Migrate schema
 
 ```bash
-npm run db:generate
+npm run db:migrate
 ```
 
 ### 6. Start the Application
